@@ -1,0 +1,21 @@
+This is a simple irc bot written in scala.
+
+Right now it does one thing: when a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
+
+To configure, have a file called 'config.xml' in the root of your classpath. Mine looks like this:
+
+<server name="freenode"
+        url="irc.freenode.net"
+        nick="your_nick_here"
+        identify="your_nickserv_pass_here">
+    <channel name="#test_channel"/>
+</server>
+
+You can add as many channels as you wish.
+
+I compile with: mvn assembly:assembly
+
+I run with: java -classpath target/scalabot-0.1-SNAPSHOT-jar-with-dependencies.jar org.cansado.scalabot.ScalaBot
+
+If you have any questions, feel free to add to the wiki or do whatever. I don't know github yet.
+

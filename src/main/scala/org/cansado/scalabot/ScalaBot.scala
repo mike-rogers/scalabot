@@ -13,7 +13,7 @@ object ScalaBot extends PircBot {
     setVerbose(true)
     setEncoding("UTF-8")
     connect((config \ "@url").toString)
-    if (config \ "@identify")
+    if ((config \ "@identify").toString != "")
       identify((config \ "@identify").toString)
 
     val channelNodes = config \ "channel"
