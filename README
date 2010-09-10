@@ -1,6 +1,8 @@
 This is a simple irc bot written in scala.
 
-Right now it does one thing: when a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
+Right now it does two things:
+    1. When a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
+    2. When a user prefixes her privmsg with "%crime" the ScalaBot will randomize two superheroes known for crimefighting.
 
 To configure, have a file called 'config.xml' in the root of your classpath. Mine looks like this:
 
