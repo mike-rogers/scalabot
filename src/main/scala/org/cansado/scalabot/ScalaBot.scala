@@ -28,8 +28,11 @@ object ScalaBot extends PircBot {
 
   override def onMessage(channel: String, sender: String, login: String, hostname: String, message: String) {
     val command = message.split(' ')(0)
-    if (command.toUpperCase() == "%POM") {
-      sendMessage(channel, new PomCommand().execute())
+    command toUpperCase match {
+      case "%POM" =>
+	sendMessage(channel, new PomCommand().execute())
+      case "%CRIME" =>
+	sendMessage(channel, new CrimeCommand().execute())
     }
   }
 }
