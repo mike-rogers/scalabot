@@ -33,6 +33,8 @@ object ScalaBot extends PircBot {
 	sendMessage(channel, new PomCommand().execute())
       case "%CRIME" =>
 	sendMessage(channel, new CrimeCommand().execute())
+      case "%CALC" =>
+	sendMessage(channel, new CalcCommand().execute(message.split(' ').tail))
       case _ =>
     }
   }
