@@ -1,8 +1,9 @@
 This is a simple irc bot written in scala.
 
-Right now it does two things:
+Right now it does three things:
     1. When a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
-    2. When a user prefixes her privmsg with "%crime" the ScalaBot will randomize two superheroes known for crimefighting.
+    2. The "%crime" command will randomize two superheroes known for crimefighting.
+    3. The "%calc" command will try to execute the remainder of the privmsg as an RPN statement
 
 To configure, have a file called 'config.xml' in the root of your classpath. Mine looks like this:
 
