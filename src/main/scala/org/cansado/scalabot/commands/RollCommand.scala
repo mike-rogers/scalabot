@@ -12,12 +12,15 @@ class RollCommand extends ArgumentsCommand {
 
     dieValue match {
       case extractor(count, side) => {
-	var retvalue = 0
+	var retvalue = (dieValue + ": ")
+	var total = 0
+
 	if (count.toInt > 1000) return "now you're just being a dick"
+
 	for (i <- 1 to count.toInt) {
-	  retvalue += (random.nextInt(side.toInt) + 1)
+	  total += (random.nextInt(side.toInt) + 1)
 	}
-        return retvalue.toString
+        return (retvalue + total.toString)
       }
       case _ => "error"
     }
