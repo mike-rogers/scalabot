@@ -41,6 +41,8 @@ object ScalaBot extends PircBot {
 	  sendMessage(channel, new CalcCommand().execute(message.split(' ').tail))
 	case "%ROLL" =>
 	  sendMessage(channel, new RollCommand().execute(message.split(' ').tail))
+	case "%STOCK" =>
+	  sendMessage(channel, new StockCommand().execute(message.split(' ').tail))
 	case _ =>
       }
     }

@@ -1,10 +1,11 @@
 This is a simple irc bot written in scala.
 
-Right now it does four things:
+Right now it does five things:
     1. When a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
     2. The "%crime" command will randomize two superheroes known for crimefighting.
     3. The "%calc" command will try to execute the remainder of the privmsg as an RPN statement.
     4. The "%roll" command will roll a certain number of dice. For example, 2d4 will add 2 four-sided dice.
+    5. THe "%stock" command will return the current stock value for a given ticker symbol.
 
 To configure, have a file called 'config.xml' in the root of your classpath. Mine looks like this:
 
