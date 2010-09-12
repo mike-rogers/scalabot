@@ -4,7 +4,7 @@ class StockCommand extends ArgumentsCommand {
 
   def execute(args: Array[String]): String = {
     val Extractor = """.*?(\d+\.\d+).*""".r
-    val symbol = "AAPL" //args(0)
+    val symbol = args(0)
     val url = "http://download.finance.yahoo.com/d/quotes.csv?s=" + java.net.URLEncoder.encode(symbol) + "&f=snk1"
     val dataArray = scala.io.Source.fromURL(url).mkString.split(',')
 
