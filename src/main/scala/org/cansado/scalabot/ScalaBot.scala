@@ -32,19 +32,10 @@ class ScalaBot extends PircBot {
     val channelNodes = config \ "channel"
     channelNodes.foreach { channel =>
       joinChannel((channel \ "@name").toString)
-      twitterConfigs += (channel \ "@name").toString -> getTwitterConfig(channel)
+      if ((channel \ "twitter").length == 1) {
+	twitterConfigs += (channel \ "@name").toString -> TwitterConfig.fromXML((channel \ "twitter")(0))
+      }
     }
-  }
-
-  def getTwitterConfig(channel:Node): TwitterConfig = {
-    val twitterConfig:TwitterConfig = new TwitterConfig()
-    twitterConfig.consumerKey = (channel \ "@twitterConsumerKey").toString
-    twitterConfig.consumerSecret = (channel \ "@twitterConsumerSecret").toString
-    twitterConfig.tokenKey = (channel \ "@twitterTokenKey").toString
-    twitterConfig.tokenSecret = (channel \ "@twitterTokenSecret").toString
-    twitterConfig.name = (channel \ "@twitterName").toString
-
-    return twitterConfig
   }
 
   override def onMessage(channel: String, sender: String, login: String, hostname: String, message: String) = {

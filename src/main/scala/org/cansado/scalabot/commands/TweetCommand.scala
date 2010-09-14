@@ -8,6 +8,11 @@ import org.cansado.scalabot.twitter._
 class TweetCommand(twitterConfig: TwitterConfig) extends ContextCommand {
 
   def execute(context:CommandContext): String = {
+    if (context.args.length == 1 && context.args(0) == "info") {
+      context.bot.sendMessage(context.channel, "http://twitter.com/" + twitterConfig.name)
+      return "info"
+    }
+
     if (null == twitterConfig.tokenKey || null == twitterConfig.tokenSecret ||
 	null == twitterConfig.consumerKey || null == twitterConfig.consumerSecret) {
       context.bot.sendMessage(context.channel, "you need to initialize twitter. please try '%tweet init' for instructions")
@@ -18,7 +23,8 @@ class TweetCommand(twitterConfig: TwitterConfig) extends ContextCommand {
     if (message.length > 140) {
       context.bot.sendMessage(context.channel, "you suck: message too long")
     } else {
-      context.bot.sendMessage(context.channel, "http://twitter.com/" + twitterConfig.name + "/status/" + update(message))
+      update(message)
+      context.bot.sendMessage(context.channel, "tweet!")
     }
 
     "success"
@@ -31,6 +37,4 @@ class TweetCommand(twitterConfig: TwitterConfig) extends ContextCommand {
     val status:Status = twitter.updateStatus(message)
     status.getId().toString()
   }
-
-  
 }
