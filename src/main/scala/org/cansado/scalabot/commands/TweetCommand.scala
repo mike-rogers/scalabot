@@ -15,7 +15,7 @@ class TweetCommand(twitterConfig: TwitterConfig) extends ContextCommand {
 
     if (null == twitterConfig.tokenKey || null == twitterConfig.tokenSecret ||
 	null == twitterConfig.consumerKey || null == twitterConfig.consumerSecret) {
-      context.bot.sendMessage(context.channel, "you need to initialize twitter. please try '%tweet init' for instructions")
+      context.bot.sendMessage(context.channel, "you need to initialize twitter. please check http://github.com/mike-rogers/scalabot for instructions")
       return "error"
     }
 
