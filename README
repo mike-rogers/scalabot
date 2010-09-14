@@ -1,11 +1,20 @@
+------------------------------
+Introduction
+------------------------------
+
 This is a simple irc bot written in scala.
 
-Right now it does five things:
-    1. When a user prefixes her privmsg with "%pom" the ScalaBot will output the position of the moon.
+Right now it has six commands:
+    1. The "%pom" command will output the phase of the mooon.
     2. The "%crime" command will randomize two superheroes known for crimefighting.
     3. The "%calc" command will try to execute the remainder of the privmsg as an RPN statement.
     4. The "%roll" command will roll a certain number of dice. For example, 2d4 will add 2 four-sided dice.
     5. The "%stock" command will return the current stock value for a given ticker symbol.
+    6. The "%tweet" command. See 'Configuring the Tweet Command' for more information.
+
+------------------------------
+Configuration
+------------------------------
 
 To configure, have a file called 'config.xml' in the root of your classpath. Mine looks like this:
 
@@ -18,13 +27,43 @@ To configure, have a file called 'config.xml' in the root of your classpath. Min
 
 You can add as many channels as you wish.
 
+------------------------------
+Compiling and Running
+------------------------------
+
 Prior to your first compilation, you will need to install the PircBot library in Maven. To do this, download the library from http://www.jibble.org/pircbot.php, unzip, and run the following command:
 
 mvn install:install-file -Dfile=pircbot-1.5.0/pircbot.jar -DgroupId=pircbot -DartifactId=pircbot -Dversion=1.5.0 -Dpackaging=jar
 
 I compile with: mvn assembly:assembly
 
-I run with: java -classpath target/scalabot-0.1-SNAPSHOT-jar-with-dependencies.jar org.cansado.scalabot.ScalaBot
+I run with: java -cp target/scalabot-0.1-SNAPSHOT-jar-with-dependencies.jar org.cansado.scalabot.ScalaBot
+
+------------------------------
+Configuring the Tweet Command
+------------------------------
+
+The %tweet command is intended to be a gateway from an IRC channel to a single Twitter account. Right now you can only post to the Twitter account from IRC.
+
+To configure the %tweet command, you'll need to register an account with Twitter. You'll then need to log in to this new account and visit http://twitter.com/apps/new to register this bot as a new application. This will get you your 'consumerKey' and 'consumerSecret'.
+
+Then you'll need to compile the application per 'Compiling and Running', and run with: java -cp target/scalabot-0.1-SNAPSHOT-jar-with-dependencies.jar org.cansado.scalabot.twitter.Configurator
+
+When prompted, enter your consumerKey and consumerSecret. You will then be asked to visit a URL. Go there and 'approve' the application. You'll be presented with a PIN, which you will then need to enter at the Configurator prompt.
+
+The Configurator will spit out your 'tokenKey' and 'tokenSecret'. You now have everything you need to configure the %tweet command. Here's a sample config.xml:
+
+<server name="server-identifier"
+	url="server.url"
+	nick="bot-nickname">
+  <channel name="#yourchannel">
+    <twitter name="twitter-name"
+	     consumerKey="consumerKey"
+	     consumerSecret="consumerSecret"
+	     tokenKey="tokenKey"
+	     tokenSecret="tokenSecret"/>
+  </channel>
+</server>
 
 If you have any questions, feel free to add to the wiki or do whatever. I don't know github yet.
 
