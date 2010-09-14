@@ -2,14 +2,26 @@ package org.cansado.scalabot
 
 import org.jibble.pircbot.PircBot
 
-import org.cansado.scalabot.commands._
+import org.cansado.scalabot.commands._, twitter._
 
 import scala.xml._
+import scala.collection.mutable.HashMap
 import scala.actors.Actor._
 
-object ScalaBot extends PircBot {
+class ScalaBot extends PircBot {
+  val twitterConfigs = new HashMap[String, TwitterConfig]
 
-  def configure(config: Elem) {
+  def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
+    val context: CommandContext = new CommandContext()
+    context.channel = channel
+    context.speaker = speaker
+    context.args = args
+    context.bot = this
+
+    return context
+  }
+
+  def configure(config: Elem) = {
     setName((config \ "@nick").toString)
     setVerbose(true)
     setEncoding("UTF-8")
@@ -20,14 +32,22 @@ object ScalaBot extends PircBot {
     val channelNodes = config \ "channel"
     channelNodes.foreach { channel =>
       joinChannel((channel \ "@name").toString)
-    }			 
+      twitterConfigs += (channel \ "@name").toString -> getTwitterConfig(channel)
+    }
   }
 
-  def main(args: Array[String]) {
-    configure(XML.load("config.xml"))
+  def getTwitterConfig(channel:Node): TwitterConfig = {
+    val twitterConfig:TwitterConfig = new TwitterConfig()
+    twitterConfig.consumerKey = (channel \ "@twitterConsumerKey").toString
+    twitterConfig.consumerSecret = (channel \ "@twitterConsumerSecret").toString
+    twitterConfig.tokenKey = (channel \ "@twitterTokenKey").toString
+    twitterConfig.tokenSecret = (channel \ "@twitterTokenSecret").toString
+    twitterConfig.name = (channel \ "@twitterName").toString
+
+    return twitterConfig
   }
 
-  override def onMessage(channel: String, sender: String, login: String, hostname: String, message: String) {
+  override def onMessage(channel: String, sender: String, login: String, hostname: String, message: String) = {
     val command = message.split(' ')(0)
     val caller = self
 
@@ -43,8 +63,17 @@ object ScalaBot extends PircBot {
 	  sendMessage(channel, new RollCommand().execute(message.split(' ').tail))
 	case "%STOCK" =>
 	  sendMessage(channel, new StockCommand().execute(message.split(' ').tail))
+	case "%TWEET" =>
+	  new TweetCommand(twitterConfigs.get(channel).get).execute(createContext(channel, sender, message.split(' ').tail))
 	case _ =>
       }
     }
+  }
+}
+
+object ScalaBot {
+  def main(args: Array[String]) {
+    val bot:ScalaBot = new ScalaBot()
+    bot.configure(XML.load("config.xml"))
   }
 }
