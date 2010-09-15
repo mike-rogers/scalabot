@@ -11,6 +11,7 @@ Right now it has six commands:
     4. The "%roll" command will roll a certain number of dice. For example, 2d4 will add 2 four-sided dice.
     5. The "%stock" command will return the current stock value for a given ticker symbol.
     6. The "%tweet" command. See 'Configuring the Tweet Command' for more information.
+    7. The "%utime" command will return the current Unix time in seconds since the epoch (1970-01-01)
 
 ------------------------------
 Configuration
