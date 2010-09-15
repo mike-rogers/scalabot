@@ -6,11 +6,11 @@ class StockCommand extends ArgumentsCommand {
     val Extractor = """.*?(\d+\.\d+).*""".r
     val symbol = args(0)
     val url = "http://download.finance.yahoo.com/d/quotes.csv?s=" + java.net.URLEncoder.encode(symbol) + "&f=snk1"
-    val dataArray = scala.io.Source.fromURL(url).mkString.split(',')
+    val dataArray = scala.io.Source.fromURL(url).mkString.split('"')
 
-    var retval = dataArray(0).replaceAll("\"", "") + " (" + dataArray(1).replaceAll("\"", "") + "): "
+    var retval = dataArray(1) + " (" + dataArray(3) + "): "
 
-    dataArray(2).trim match {
+    dataArray(5).trim match {
       case Extractor(quote) => retval += quote
       case _ => retval += "bad regex parsing ftl"
     }
@@ -18,3 +18,4 @@ class StockCommand extends ArgumentsCommand {
     return retval
   }
 }
+
