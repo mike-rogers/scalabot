@@ -18,8 +18,9 @@ class FaqDeleteCommand extends JdbcCommand {
     if (key == null) { context.connection.close(); return "error" }
 
     try {
-      val statement:PreparedStatement = context.connection.prepareStatement("delete from scalabot_faq where `key` = ?")
+      val statement:PreparedStatement = context.connection.prepareStatement("delete from scalabot_faq where `key` = ? and `channel` = ?")
       statement.setString(1, key)
+      statement.setString(2, context.channel)
       statement.executeUpdate()
 
       context.bot.sendMessage(context.channel, key + " removed from the faq")

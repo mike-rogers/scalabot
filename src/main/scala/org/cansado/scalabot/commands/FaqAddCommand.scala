@@ -26,9 +26,10 @@ class FaqAddCommand extends JdbcCommand {
     if (value == null) { context.connection.close(); return "error" }
 
     try {
-      val statement:PreparedStatement = context.connection.prepareStatement("insert into scalabot_faq (`key`, `value`) values (?, ?)")
+      val statement:PreparedStatement = context.connection.prepareStatement("insert into scalabot_faq (`key`, `value`, `channel`) values (?, ?, ?)")
       statement.setString(1, key)
       statement.setString(2, value)
+      statement.setString(3, context.channel)
 
       statement.executeUpdate()
       context.bot.sendMessage(context.channel, key + " -- added to the faq")

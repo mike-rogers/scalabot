@@ -18,9 +18,10 @@ class FaqCommand extends JdbcCommand {
     if (key == null) { context.connection.close(); return "error" }
 
     try {
-      val statement:PreparedStatement = context.connection.prepareStatement("select `value` from scalabot_faq where `key` = ?")
+      val statement:PreparedStatement = context.connection.prepareStatement("select `value` from scalabot_faq where `key` = ? and `channel` = ? order by id asc")
       var result:String = null
       statement.setString(1, key)
+      statement.setString(2, context.channel)
       val results:ResultSet = statement.executeQuery()
       while (results.next()) {
 	result = results.getString(1)
