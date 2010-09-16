@@ -54,6 +54,14 @@ class ScalaBot extends PircBot {
     }
   }
 
+  override def onJoin(channel: String, sender: String, login: String, hostname: String) = {
+    new TellCommand().checkForMessages(createContext(channel, sender, null))
+  }
+
+  override def onNickChange(oldNick: String, login: String, hostname: String, newNick: String) = {
+    new TellCommand().checkForMessages(createContext(null, newNick, null))
+  }
+
   override def onMessage(channel: String, sender: String, login: String, hostname: String, message: String) = {
     val command = message.split(' ')(0)
     val caller = self
@@ -75,11 +83,15 @@ class ScalaBot extends PircBot {
 	case "%TWEET" =>
 	  new TweetCommand(twitterConfigs.get(channel).get).execute(createContext(channel, sender, message.split(' ').tail))
 	case "%FAQ" =>
-	  new FaqCommand().execute(createContext(channel, sender, message.split(' '). tail))
+	  new FaqCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case "%FAQADD" =>
-	  new FaqAddCommand().execute(createContext(channel, sender, message.split(' '). tail))
+	  new FaqAddCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case "%FAQDEL" =>
-	  new FaqDeleteCommand().execute(createContext(channel, sender, message.split(' '). tail))
+	  new FaqDeleteCommand().execute(createContext(channel, sender, message.split(' ').tail))
+	case "%TELL" =>
+	  new TellCommand().execute(createContext(channel, sender, message.split(' ').tail))
+	case "%ACK" =>
+	  new AckCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case _ =>
       }
     }
