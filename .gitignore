@@ -1,3 +1,4 @@
 *~
 config.xml
 target/
+src/main/resources/dbconfig.properties

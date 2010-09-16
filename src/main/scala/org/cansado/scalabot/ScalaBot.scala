@@ -18,7 +18,8 @@ class ScalaBot extends PircBot {
   var beanFactory:BeanFactory = null
 
   def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
-    val dataSource:PoolingDataSource = beanFactory.getBean("pooledDataSource").asInstanceOf[PoolingDataSource]
+    val dataSource:PoolingDataSource = if (beanFactory == null) null else 
+      beanFactory.getBean("pooledDataSource").asInstanceOf[PoolingDataSource]
     val context: CommandContext = new CommandContext()
     context.channel = channel
     context.speaker = speaker
@@ -26,7 +27,11 @@ class ScalaBot extends PircBot {
     context.bot = this
 
     if (dataSource != null) {
-      context.connection = dataSource.getConnection()
+      try {
+	context.connection = dataSource.getConnection()
+      } catch {
+	case e => { println(e.toString()) }
+      }
     }
 
     return context
@@ -69,6 +74,8 @@ class ScalaBot extends PircBot {
 	  sendMessage(channel, new StockCommand().execute(message.split(' ').tail))
 	case "%TWEET" =>
 	  new TweetCommand(twitterConfigs.get(channel).get).execute(createContext(channel, sender, message.split(' ').tail))
+	case "%FAQ" =>
+	  new FaqCommand().execute(createContext(channel, sender, message.split(' '). tail))
 	case _ =>
       }
     }
@@ -80,7 +87,7 @@ object ScalaBot {
     val factory:BeanFactory = try {
       new ClassPathXmlApplicationContext("spring-context.xml")
     } catch {
-      case e: java.lang.Exception => null
+      case e: java.lang.Exception => { println(e.toString()); null }
     }
 
     val bot:ScalaBot = new ScalaBot()
