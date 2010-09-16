@@ -12,6 +12,9 @@ Right now it has six commands:
     5. The "%stock" command will return the current stock value for a given ticker symbol.
     6. The "%tweet" command. See 'Configuring the Tweet Command' for more information.
     7. The "%utime" command will return the current Unix time in seconds since the epoch (1970-01-01)
+    8. The "%faq" command returns an answer to a frequently asked question. Example: %faq help
+    9. The "%faqadd" command adds an answer to the FAQ. Example: %faqadd help This is the text that will show up
+    10. The "%faqdel" command removes an answer from the FAQ. Example: %faqdel help
 
 ------------------------------
 Configuration
@@ -39,6 +42,21 @@ mvn install:install-file -Dfile=pircbot-1.5.0/pircbot.jar -DgroupId=pircbot -Dar
 I compile with: mvn assembly:assembly
 
 I run with: java -cp target/scalabot-0.1-SNAPSHOT-jar-with-dependencies.jar org.cansado.scalabot.ScalaBot
+
+------------------------------
+Configuring the Database
+------------------------------
+
+First you'll want to create the database (I use MySQL). Grant all permissions to some username and password pair.
+
+Edit the file src/main/resources/dbconfig.properties. Mine looks like this:
+
+db.driver=com.mysql.jdbc.Driver
+db.url=jdbc:mysql://localhost/scalabot
+db.username=scalabot
+db.password=mySecretPasswordOmg
+
+You'll want to run all the scripts in the db/ directory to create the tables necessary to run the commands.
 
 ------------------------------
 Configuring the Tweet Command
