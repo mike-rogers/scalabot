@@ -4,7 +4,7 @@ Introduction
 
 This is a simple irc bot written in scala.
 
-Right now it has six commands:
+Right now it has ten commands:
     1. The "%pom" command will output the phase of the mooon.
     2. The "%crime" command will randomize two superheroes known for crimefighting.
     3. The "%calc" command will try to execute the remainder of the privmsg as an RPN statement.
