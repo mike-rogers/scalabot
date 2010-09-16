@@ -33,7 +33,7 @@
     <constructor-arg index="5"><value>true</value></constructor-arg>
   </bean>
 
-  <bean id="pooledDS" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
+  <bean id="pooledDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">
     <constructor-arg><ref bean="pool"/></constructor-arg>
   </bean>  
 </beans>  

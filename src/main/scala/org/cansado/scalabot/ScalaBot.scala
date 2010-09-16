@@ -7,6 +7,8 @@ import org.cansado.scalabot.commands._, twitter._
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
+import org.apache.commons.dbcp.PoolingDataSource
+
 import scala.xml._
 import scala.collection.mutable.HashMap
 import scala.actors.Actor._
@@ -16,11 +18,16 @@ class ScalaBot extends PircBot {
   var beanFactory:BeanFactory = null
 
   def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
+    val dataSource:PoolingDataSource = beanFactory.getBean("pooledDataSource").asInstanceOf[PoolingDataSource]
     val context: CommandContext = new CommandContext()
     context.channel = channel
     context.speaker = speaker
     context.args = args
     context.bot = this
+
+    if (dataSource != null) {
+      context.connection = dataSource.getConnection()
+    }
 
     return context
   }
