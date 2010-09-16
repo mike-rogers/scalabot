@@ -4,12 +4,16 @@ import org.jibble.pircbot.PircBot
 
 import org.cansado.scalabot.commands._, twitter._
 
+import org.springframework.beans.factory.BeanFactory
+import org.springframework.context.support.ClassPathXmlApplicationContext
+
 import scala.xml._
 import scala.collection.mutable.HashMap
 import scala.actors.Actor._
 
 class ScalaBot extends PircBot {
   val twitterConfigs = new HashMap[String, TwitterConfig]
+  var beanFactory:BeanFactory = null
 
   def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
     val context: CommandContext = new CommandContext()
@@ -66,7 +70,14 @@ class ScalaBot extends PircBot {
 
 object ScalaBot {
   def main(args: Array[String]) {
+    val factory:BeanFactory = try {
+      new ClassPathXmlApplicationContext("spring-context.xml")
+    } catch {
+      case e: java.lang.Exception => null
+    }
+
     val bot:ScalaBot = new ScalaBot()
     bot.configure(XML.load("config.xml"))
+    bot.beanFactory = factory
   }
 }
