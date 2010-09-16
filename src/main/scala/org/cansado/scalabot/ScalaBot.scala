@@ -76,6 +76,10 @@ class ScalaBot extends PircBot {
 	  new TweetCommand(twitterConfigs.get(channel).get).execute(createContext(channel, sender, message.split(' ').tail))
 	case "%FAQ" =>
 	  new FaqCommand().execute(createContext(channel, sender, message.split(' '). tail))
+	case "%FAQADD" =>
+	  new FaqAddCommand().execute(createContext(channel, sender, message.split(' '). tail))
+	case "%FAQDEL" =>
+	  new FaqDeleteCommand().execute(createContext(channel, sender, message.split(' '). tail))
 	case _ =>
       }
     }

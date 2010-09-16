@@ -2,7 +2,7 @@ package org.cansado.scalabot.commands
 
 import java.sql._
 
-class FaqCommand extends JdbcCommand {
+class FaqDeleteCommand extends JdbcCommand {
   def execute(context:CommandContext, connection:Connection):String = {
     if (context.connection == null) {
       context.bot.sendMessage(context.channel, "database not configured. try again, idiot")
@@ -18,20 +18,12 @@ class FaqCommand extends JdbcCommand {
     if (key == null) { context.connection.close(); return "error" }
 
     try {
-      val statement:PreparedStatement = context.connection.prepareStatement("select `value` from scalabot_faq where `key` = ?")
-      var result:String = null
+      val statement:PreparedStatement = context.connection.prepareStatement("delete from scalabot_faq where `key` = ?")
       statement.setString(1, key)
-      val results:ResultSet = statement.executeQuery()
-      while (results.next()) {
-	result = results.getString(1)
-      }
-      if (result == null) {
-	context.bot.sendMessage(context.channel, "no faq for " + key)
-      } else {
-	context.bot.sendMessage(context.channel, result)
-      }
+      statement.executeUpdate()
 
-      results.close()
+      context.bot.sendMessage(context.channel, key + " removed from the faq")
+
       statement.close()
     } catch {
       case _ => context.bot.sendMessage(context.channel, "you suck. send a less stupid argument")
