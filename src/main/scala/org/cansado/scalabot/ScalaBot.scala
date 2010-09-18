@@ -2,7 +2,7 @@ package org.cansado.scalabot
 
 import org.jibble.pircbot.PircBot
 
-import org.cansado.scalabot.commands._, twitter._
+import org.cansado.scalabot.commands._, twitter._, yahoo._
 
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.context.support.ClassPathXmlApplicationContext
@@ -17,6 +17,7 @@ import java.sql.Connection
 
 class ScalaBot extends PircBot {
   val twitterConfigs = new HashMap[String, TwitterConfig]
+  val yahooConfigs = new HashMap[String, YahooConfig]
   var beanFactory:BeanFactory = null
   var server:String = null
   var identify:String = null
@@ -62,6 +63,7 @@ class ScalaBot extends PircBot {
       channels :+= (channel \ "@name").toString
       if ((channel \ "twitter").length == 1) {
 	twitterConfigs += (channel \ "@name").toString -> TwitterConfig.fromXML((channel \ "twitter")(0))
+	yahooConfigs += (channel \ "@name").toString -> YahooConfig.fromXML((channel \ "yahoo")(0))
       }
     }
   }
@@ -118,6 +120,8 @@ class ScalaBot extends PircBot {
 	  new AckCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case "%ALERT" =>
 	  new AlertCommand().execute(createContext(channel, sender, message.split(' ').tail))
+	case "%SPELL" =>
+	  sendMessage(channel, new SpellCommand(yahooConfigs.get(channel).get).execute(message.split(' ').tail))
 	case _ =>
       }
     }

@@ -18,6 +18,7 @@ Right now it has thirteen commands:
     11. The "%tell" command will leave a message for someone who's not currently logged in
     12. The "%ack" command will delete all %tell messages left for you in a specific channel
     13. The "%alert" command messages you after X minutes. Example: %alert 60 put laundry in dryer
+    14. The "%spell" command uses a Yahoo! web service to get suggestions for your misspellings. See Yahoo! section below.
 
 ------------------------------
 Configuration
@@ -86,6 +87,24 @@ The Configurator will spit out your 'tokenKey' and 'tokenSecret'. You now have e
 	     tokenSecret="tokenSecret"/>
   </channel>
 </server>
+
+------------------------------
+Configuring Yahoo! Services
+------------------------------
+
+The Yahoo! web services require a unique application ID to be registered with Yahoo!. To configure, you'll need to visit https://developer.apps.yahoo.com/projects and register your project to obtain an AppID.
+
+Once you have your AppID, modify your config.xml:
+
+<server name="server-identifier"
+	url="server.url"
+	nick="bot-nickname">
+  <channel name="#yourchannel">
+    <yahoo appId="your-yahoo-app-id"/>
+  </channel>
+</server>
+
+------------------------------
 
 If you have any questions, feel free to add to the wiki or do whatever. I don't know github yet.
 
