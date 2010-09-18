@@ -4,7 +4,7 @@ Introduction
 
 This is a simple irc bot written in scala.
 
-Right now it has twelve commands:
+Right now it has thirteen commands:
     1. The "%pom" command will output the phase of the mooon.
     2. The "%crime" command will randomize two superheroes known for crimefighting.
     3. The "%calc" command will try to execute the remainder of the privmsg as an RPN statement.
@@ -17,6 +17,7 @@ Right now it has twelve commands:
     10. The "%faqdel" command removes an answer from the FAQ. Example: %faqdel help
     11. The "%tell" command will leave a message for someone who's not currently logged in
     12. The "%ack" command will delete all %tell messages left for you in a specific channel
+    13. The "%alert" command messages you after X minutes. Example: %alert 60 put laundry in dryer
 
 ------------------------------
 Configuration

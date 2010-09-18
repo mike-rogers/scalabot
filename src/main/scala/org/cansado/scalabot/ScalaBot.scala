@@ -13,26 +13,38 @@ import scala.xml._
 import scala.collection.mutable.HashMap
 import scala.actors.Actor._
 
+import java.sql.Connection
+
 class ScalaBot extends PircBot {
   val twitterConfigs = new HashMap[String, TwitterConfig]
   var beanFactory:BeanFactory = null
+  var server:String = null
+  var identify:String = null
+  var channels:List[String] = List()
 
-  def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
+  def createConnection():Connection = {
     val dataSource:PoolingDataSource = if (beanFactory == null) null else 
       beanFactory.getBean("pooledDataSource").asInstanceOf[PoolingDataSource]
+    var connection:Connection = null
+
+    if (dataSource != null) {
+      try {
+	connection = dataSource.getConnection()
+      } catch {
+	case e => { println(e.toString()) }
+      }
+    }
+
+    return connection
+  }
+
+  def createContext(channel:String, speaker: String, args: Array[String]): CommandContext = {
     val context: CommandContext = new CommandContext()
     context.channel = channel
     context.speaker = speaker
     context.args = args
     context.bot = this
-
-    if (dataSource != null) {
-      try {
-	context.connection = dataSource.getConnection()
-      } catch {
-	case e => { println(e.toString()) }
-      }
-    }
+    context.connection = createConnection()
 
     return context
   }
@@ -41,17 +53,29 @@ class ScalaBot extends PircBot {
     setName((config \ "@nick").toString)
     setVerbose(true)
     setEncoding("UTF-8")
-    connect((config \ "@url").toString)
+    server = (config \ "@url").toString
     if ((config \ "@identify").toString != "")
-      identify((config \ "@identify").toString)
+      identify = (config \ "@identify").toString
 
     val channelNodes = config \ "channel"
     channelNodes.foreach { channel =>
-      joinChannel((channel \ "@name").toString)
+      channels :+= (channel \ "@name").toString
       if ((channel \ "twitter").length == 1) {
 	twitterConfigs += (channel \ "@name").toString -> TwitterConfig.fromXML((channel \ "twitter")(0))
       }
     }
+  }
+
+  def go() = {
+    connect(server)
+    if (identify != null)
+      identify(identify)
+
+    channels.foreach { channel =>
+      joinChannel(channel)
+    }
+
+    new AlertCommand().loadAlerts(createConnection(), this)
   }
 
   override def onJoin(channel: String, sender: String, login: String, hostname: String) = {
@@ -92,6 +116,8 @@ class ScalaBot extends PircBot {
 	  new TellCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case "%ACK" =>
 	  new AckCommand().execute(createContext(channel, sender, message.split(' ').tail))
+	case "%ALERT" =>
+	  new AlertCommand().execute(createContext(channel, sender, message.split(' ').tail))
 	case _ =>
       }
     }
@@ -109,5 +135,6 @@ object ScalaBot {
     val bot:ScalaBot = new ScalaBot()
     bot.configure(XML.load("config.xml"))
     bot.beanFactory = factory
+    bot go
   }
 }
