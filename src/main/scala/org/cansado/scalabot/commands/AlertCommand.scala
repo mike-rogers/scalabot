@@ -103,8 +103,30 @@ class AlertCommand extends JdbcCommand {
 
   def createAlert(longTime:Long, message:String, context:CommandContext) {
     actor {
+      // the connection is closed after the thread.sleep
       java.lang.Thread.sleep(longTime)
-      context.bot.sendMessage(context.speaker, message)
+
+      if ((false /: context.bot.getUsers(context.channel)) { (ret, elem) => ret || (elem.getNick() == context.speaker) }) {
+	context.bot.sendMessage(context.speaker, message)
+      } else {
+	val connection:Connection = context.bot.createConnection()
+	try {
+	  val statement:PreparedStatement = context.connection.prepareStatement("insert into scalabot_tell (`user`, `channel`, `message`, `from`) values (?, ?, ?, ?)")
+	  statement.setString(1, context.speaker)
+	  statement.setString(2, context.channel)
+	  statement.setString(3, message)
+	  statement.setString(4, "alert")
+	  
+	  statement.executeUpdate()
+
+	  statement.close()
+	} catch {
+	  case e:Exception => println(e.toString())
+	} finally {
+	  connection.close()
+	}
+      }
+
 
       val connection = context.bot.createConnection()
       try {
