@@ -13,6 +13,9 @@ class SpellCommand(yahooConfig: YahooConfig) extends ArgumentsCommand {
       case _ => return "supply at least one argument. idiot."
     }
 
+    if ("" == yahooConfig.appId)
+      return "yahoo web service not configured. go read http://github.com/mike-rogers/scalabot"
+
     val url = "http://search.yahooapis.com/WebSearchService/V1/spellingSuggestion?appid=" + java.net.URLEncoder.encode(yahooConfig.appId) + "&query=" + word
     val xmlReturn = XML.load(url)
     val resultNodes = xmlReturn \ "Result"
